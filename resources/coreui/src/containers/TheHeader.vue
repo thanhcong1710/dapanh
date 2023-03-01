@@ -11,11 +11,8 @@
       @click="$store.commit('toggleSidebarDesktop')"
     />
     <CHeaderBrand class="mx-auto d-lg-none" to="/">
-      <CIcon name="logo" height="48" alt="Logo"/>
+      <CIcon name="logo" height="48" alt="Logo" />
     </CHeaderBrand>
-
-    <CMenu/>
-
     <CHeaderNav class="mr-4">
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>
@@ -27,53 +24,61 @@
       </CHeaderNavItem>
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>
-          <CIcon name="cil-envelope-open"/>
+          <CIcon name="cil-envelope-open" />
         </CHeaderNavLink>
       </CHeaderNavItem>
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>
-          <CIcon name="cil-bell"/>
+          <CIcon name="cil-bell" />
         </CHeaderNavLink>
       </CHeaderNavItem>
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>
-          <CIcon name="cil-list"/>
+          <CIcon name="cil-list" />
         </CHeaderNavLink>
       </CHeaderNavItem>
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>
-          <CIcon name="cil-envelope-open"/>
+          <CIcon name="cil-envelope-open" />
         </CHeaderNavLink>
       </CHeaderNavItem>
-      <TheHeaderDropdownAccnt/>
+      <TheHeaderDropdownAccnt />
     </CHeaderNav>
-    <CSubheader class="px-3">
-      <CBreadcrumbRouter class="border-0 mb-0"/>
-    </CSubheader>
   </CHeader>
 </template>
 
 <script>
-import CMenu from './Menu'
-import TheHeaderDropdownAccnt from './TheHeaderDropdownAccnt'
+import TheHeaderDropdownAccnt from "./TheHeaderDropdownAccnt";
 
 export default {
-  name: 'TheHeader',
+  name: "TheHeader",
   components: {
     TheHeaderDropdownAccnt,
-    CMenu
   },
   data() {
-      return {
-          language: this.$i18n.locale
-      };
+    return {
+      language: this.$i18n.locale,
+    };
+  },
+  sockets: {
+    connect: function () {
+      console.log("socket to notification channel connected");
+    },
+  },
+  created() {
+    this.$socket.emit('userConnected', {
+      'user_id' : '123',
+    });
   },
   methods: {
     changeLanguage() {
-        localStorage.setItem('language', this.language);
-        this.$i18n.locale = this.language;
-        fetch(`api/language/${this.language}?token=` + localStorage.getItem("api_token"));
-    }
-  }
-}
+      localStorage.setItem("language", this.language);
+      this.$i18n.locale = this.language;
+      fetch(
+        `api/language/${this.language}?token=` +
+          localStorage.getItem("api_token")
+      );
+    },
+  },
+};
 </script>
