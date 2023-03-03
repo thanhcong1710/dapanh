@@ -1,5 +1,6 @@
 import u from '../../utilities/utility'
-const ParentsList = () => import('../../views/games/index')
+const GamesList = () => import('../../views/games/index')
+const GamesDetail = () => import('../../views/games/detail')
 
 export default {
   router: {
@@ -13,9 +14,14 @@ export default {
     children: [
       {
         path: '/games',
-        name: 'Danh Sách Khách Hàng',
-        component: ParentsList
-      }
+        name: 'Danh Sách Game',
+        component: GamesList
+      },
+      {
+        path: '/parents/:id/detail',
+        name: 'Chi Tiết Game',
+        component: GamesDetail
+      },
     ]
   }
 }

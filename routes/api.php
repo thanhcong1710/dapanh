@@ -22,7 +22,13 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('register', 'AuthController@register'); 
 
     Route::group(['middleware' => 'admin'], function ($router) {
-        Route::get('/roles/move/move-down',    'RolesController@moveDown')->name('roles.down');
+        Route::post('/rooms/create', 'RoomsController@create')->name('rooms.create');
+        Route::post('/rooms/detail/{room_id}', 'RoomsController@detail')->name('rooms.create');
+        Route::post('/rounds/approve', 'RoomsController@approveRound')->name('rooms.rounds.approve');
+        Route::post('/rounds/end', 'RoomsController@endRound')->name('rooms.rounds.approve');
+        Route::post('/rounds-2/approve', 'RoomsController@approveRound2')->name('rooms.rounds_2.approve');
+        Route::post('/rounds-2/select-option', 'RoomsController@selectOption2')->name('rooms.rounds_2.selectOption');
+        Route::post('/rounds-2/end', 'RoomsController@endRound2')->name('rooms.rounds_2.approve');
     });
 });
 

@@ -30,6 +30,11 @@ class UtilityServiceProvider extends ServiceProvider
         }
         return $resp;
     }
+	public static function first($query, $print = false)
+	{
+		$resp = self::query($query, $print);
+		return $resp && is_array($resp) && count($resp) >= 1 ? $resp[0] : $resp;
+	}
     public static function getOne($query){
 	    $finalQuery = $query. " LIMIT 1";
         $resp = DB::select(DB::raw($finalQuery));
@@ -108,5 +113,197 @@ class UtilityServiceProvider extends ServiceProvider
 			$resp = DB::update(DB::raw($sql),$arr_binding);
 			return $resp;
 		}
+	}
+
+	public static function generateRandomString($length = 10) {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[random_int(0, $charactersLength - 1)];
+		}
+		return $randomString;
+	}
+	
+	public static function getResponseGameIsOnly($is_user){
+		if($is_user){
+			$arr_status = [
+				'0'=>0,
+				'1'=>0,
+				'2'=>0,
+				'3'=>0,
+				'4'=>0,
+				'5'=>0,
+				'6'=>1,
+				'7'=>1,
+				'8'=>1,
+				'9'=>1,
+			];
+		}else {
+			$arr_status = [
+				'0'=>0,
+				'1'=>0,
+				'2'=>0,
+				'3'=>0,
+				'4'=>1,
+				'5'=>1,
+				'6'=>1,
+				'7'=>1,
+				'8'=>1,
+				'9'=>1,
+			];
+		}
+		return $arr_status[rand(0,9)];
+	}
+	public static function getResponseGame(){
+		$arr_status = [
+			'0'=>0,
+			'1'=>1
+		];
+		return $arr_status[rand(0,1)];
+	}
+	public static function processResult($arr_data, $num_img){
+		$i=0;
+		foreach($arr_data AS $row){
+			if($row['response_game']==1){
+				$i++;
+			}
+		}
+		if(count($arr_data) == $i || $i==0){
+			$total_charge = 0;
+		}else{
+			$total_charge = $i*$num_img;
+		}
+		$tb_charge = ceil($total_charge/(count($arr_data)-$i));
+		foreach($arr_data AS $k=>$row){
+			if($row['response_game']==1){
+				$arr_data[$k]['img_add'] = $total_charge > 0 ? $num_img : 0;
+				$arr_data[$k]['img_minus'] = 0; 	
+			}else{
+				$arr_data[$k]['img_add'] = 0;
+				$arr_data[$k]['img_minus'] = $tb_charge;
+			}
+		}
+		return $arr_data;
+	}
+	public static function addImgRand($num_img, $user_id, $num_type =5){
+		$list_img = u::query("SELECT id FROM data_images WHERE status=1");
+		$arr_img = array();
+		$num_type = $num_type > $num_img ? $num_img : $num_type;
+		$randIndex =  array_rand($list_img,$num_type);
+		for($i=0;$i<$num_type;$i++){
+			if($i==$num_type-1){
+				$arr_img[$i]= [
+					'img_id'=>$list_img[$randIndex[$i]],
+					'img_num'=>$num_img - (ceil($num_img/$num_type) * ($num_type-1)),
+					'user_id' => $user_id
+				];
+			}else{
+				$arr_img[$i]= [
+					'img_id'=>$list_img[$randIndex[$i]],
+					'img_num'=>ceil($num_img/$num_type),
+					'user_id' => $user_id
+				];
+			}
+		}
+		u::query("UPDATE users SET num_img = (SELECT count(id) FROM data_user_image WHERE user_id=$user_id AND status=1) WHERE id=$user_id");
+		return $arr_img;
+	}
+	public static  function minusImg($num_img, $user_id){
+		$list_img = u::query("SELECT * FROM data_user_image WHERE status=1 ORDER BY num DESC");
+		$i=0;
+		while($num_img>0 && $i < count($list_img)){
+			if($list_img[$i]->num < $num_img){
+				u::query("DELETE FROM data_user_image WHERE id = ".$list_img[$i]->id);
+				$num_img = $num_img - $list_img[$i]->num;
+			}else{
+				$tmp = $list_img[$i]->num - $num_img;
+				u::query("UPDATE data_user_image SET num = $tmp  WHERE id=".$list_img[$i]->id);
+				$num_img =0;
+			}
+			$i++;
+		}
+		u::query("UPDATE users SET num_img = (SELECT count(id) FROM data_user_image WHERE user_id=$user_id AND status=1) WHERE id=$user_id");
+		return true;
+	}
+	public static  function genSelectOptionGame2($user_option){
+		$arr_status = [
+			'0'=>1,//búa
+			'1'=>1,
+			'2'=>1,
+			'3'=>2,//bao
+			'4'=>2,
+			'5'=>2,
+			'6'=>3,//kéo
+			'7'=>3,
+			'8'=>3,
+		];
+		if($user_option == 1){
+			unset($arr_status[6]);
+		}elseif($user_option == 2){
+			unset($arr_status[1]);
+		}else{
+			unset($arr_status[3]);
+		}
+		$randIndex =  array_rand($arr_status);
+		return $arr_status[$randIndex];
+	}
+	public static function processResultGame2($arr_data, $num_img){
+		if($arr_data[0]['select_option']==1){
+			if($arr_data[1]['select_option']==1){
+				$arr_data[0]['response_game']=2;//Hòa
+				$arr_data[1]['response_game']=2; 
+			}elseif($arr_data[1]['select_option']==2){
+				$arr_data[0]['response_game']=0;//Thua
+				$arr_data[1]['response_game']=1; 
+			}else{
+				$arr_data[0]['response_game']=1;//Thắng
+				$arr_data[1]['response_game']=0; 
+			}
+		}elseif($arr_data[0]['select_option']==2){
+			if($arr_data[1]['select_option']==2){
+				$arr_data[0]['response_game']=2;
+				$arr_data[1]['response_game']=2; 
+			}elseif($arr_data[1]['select_option']==1){
+				$arr_data[0]['response_game']=0;
+				$arr_data[1]['response_game']=1; 
+			}else{
+				$arr_data[0]['response_game']=1;
+				$arr_data[1]['response_game']=0; 
+			}
+		}else{
+			if($arr_data[1]['select_option']==3){
+				$arr_data[0]['response_game']=2;
+				$arr_data[1]['response_game']=2; 
+			}elseif($arr_data[1]['select_option']==1){
+				$arr_data[0]['response_game']=0;
+				$arr_data[1]['response_game']=1; //Thắng
+			}else{
+				$arr_data[0]['response_game']=1;
+				$arr_data[1]['response_game']=0; 
+			}
+		}
+		$i=0;
+		foreach($arr_data AS $row){
+			if($row['response_game']==1){
+				$i++;
+			}
+		}
+		if(count($arr_data) == $i || $i==0){
+			$total_charge = 0;
+		}else{
+			$total_charge = $i*$num_img;
+		}
+		$tb_charge = ceil($total_charge/(count($arr_data)-$i));
+		foreach($arr_data AS $k=>$row){
+			if($row['response_game']==1){
+				$arr_data[$k]['img_add'] = $total_charge > 0 ? $num_img : 0;
+				$arr_data[$k]['img_minus'] = 0; 	
+			}else{
+				$arr_data[$k]['img_add'] = 0;
+				$arr_data[$k]['img_minus'] = $tb_charge;
+			}
+		}
+		return $arr_data;
 	}
 }

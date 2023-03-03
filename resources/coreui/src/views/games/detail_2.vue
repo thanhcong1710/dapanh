@@ -17,6 +17,7 @@ export default {
       room_info: "",
       round_info: "",
       num_img: "",
+      select_option: 1,
     };
   },
   created() {
@@ -38,7 +39,21 @@ export default {
         num_img: this.num_img,
         is_only: this.is_only
       };
-      u.p(`/api/rounds/approve`, data)
+      u.p(`/api/rounds-2/approve`, data)
+        .then((response) => {
+          if (response.status == 1) {
+          }
+        })
+        .catch((e) => {
+          u.processAuthen(e);
+        });
+    },
+    selectOption() {
+      const data = {
+        room_id: this.room_info.room_id,
+        select_option: this.select_option
+      };
+      u.p(`/api/rounds-2/select-option`, data)
         .then((response) => {
           if (response.status == 1) {
           }
@@ -53,7 +68,7 @@ export default {
         num_img: this.num_img,
         
       };
-      u.p(`/api/rounds/end`, data)
+      u.p(`/api/rounds-2/end`, data)
         .then((response) => {
           if (response.status == 1) {
           }
