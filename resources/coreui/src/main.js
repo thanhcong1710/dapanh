@@ -11,7 +11,6 @@ import VueInternationalization from 'vue-i18n';
 import Locale from '../../js/vue-i18n-locales.generated.js';
 import VueSocketIO from 'vue-3-socket.io'
 import SocketIO from 'socket.io-client'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 Vue.use(VueInternationalization);
 const i18n = new VueInternationalization({
@@ -33,7 +32,6 @@ Vue.use(new VueSocketIO({
 );
 Vue.config.performance = true
 Vue.use(CoreuiVue)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
 new Vue({
     el: '#app',
     router,

@@ -9,7 +9,6 @@
     <title>CoreUI - Vue Open Source Bootstrap Admin Template</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"/>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

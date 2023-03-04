@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col">
         Đặt cược <input class="num-img" type="number" min="1" /> 
-        <span><font-awesome-icon icon="fa-solid fa-hand" /></span>
+        <span><i class="fa-solid fa-hand"></i></span>
       </div>
       <div class="col">Column</div>
     </div>
