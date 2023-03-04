@@ -1,6 +1,27 @@
 <template>
-  <div>
+  <div class="games-index">
     <loader :active="loading.processing" :text="loading.text" />
+    <div
+      class="col-12"
+      v-for="(item, index) in list_game"
+      :key="index"
+      @click="createRoom(item.id)"
+    >
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-3">
+              <img :src="item.thumb_nail" />
+            </div>
+            <div class="col-9">
+              <h2>{{ item.title }}</h2>
+              <p>{{ item.description }}</p>
+              <button class="btn btn-light" type="button">CHƠI NGAY</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -10,24 +31,38 @@ import loader from "../../components/Loading";
 
 export default {
   name: "Games",
-  data: () => {
+  components: {
+    loader: loader,
+  },
+  data() {
     return {
       loading: {
         text: "Đang tải dữ liệu...",
         processing: false,
       },
+      list_game: [],
     };
   },
+  created() {
+    u.g(`/api/games/list`)
+      .then((response) => {
+        this.list_game = response.data;
+      })
+      .catch((e) => {
+        u.processAuthen(e);
+      });
+  },
   methods: {
-    createRoom() {
+    createRoom(game_id) {
       const data = {
-        game_id: "1",
+        game_id: game_id,
       };
+      this.loading.processing = true;
       u.p(`/api/rooms/create`, data)
         .then((response) => {
           this.loading.processing = false;
-          if (response.status == 1) {
-            this.$router.push({ path: `/rooms/${response.room_code}/detail` });
+          if (response.data.status == 1) {
+            this.$router.push({ path: `/rooms/${response.data.room_code}/detail` });
           }
         })
         .catch((e) => {
@@ -37,4 +72,3 @@ export default {
   },
 };
 </script>
-

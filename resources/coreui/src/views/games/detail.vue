@@ -1,5 +1,13 @@
 <template>
-  <div>Hello</div>
+  <div class="games-detail">
+    <div class="row">
+      <div class="col">
+        Đặt cược <input class="num-img" type="number" min="1" /> 
+        <span><font-awesome-icon icon="fa-solid fa-hand" /></span>
+      </div>
+      <div class="col">Column</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -36,7 +44,7 @@ export default {
       const data = {
         room_id: this.room_info.room_id,
         num_img: this.num_img,
-        is_only: this.is_only
+        is_only: this.is_only,
       };
       u.p(`/api/rounds/approve`, data)
         .then((response) => {
@@ -51,7 +59,6 @@ export default {
       const data = {
         room_id: this.room_info.room_id,
         num_img: this.num_img,
-        
       };
       u.p(`/api/rounds/end`, data)
         .then((response) => {

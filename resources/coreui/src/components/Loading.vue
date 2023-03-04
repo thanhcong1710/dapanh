@@ -26,18 +26,20 @@ export default {
 
 <style scoped language="scss">
 .d-flex.justify-content-center {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   z-index: 100;
   background: #3e3f4078;
+  top:0;
+  left: 0;
 }
 .spinner-border {
-  margin-top: 50px;
+  margin-top: 20%;
   position: absolute;
 }
 .loading-text {
   color: #fff;
-  margin-top: 10px;
+  margin-top: 20%;
 }
 </style>

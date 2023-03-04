@@ -1,5 +1,14 @@
 <template>
-  <div>Hello</div>
+  <div class="games-detail">
+     <div class="row">
+    <div class="col">
+      Column
+    </div>
+    <div class="col">
+      Column
+    </div>
+  </div>
+  </div>
 </template>
 
 <script>

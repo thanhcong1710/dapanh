@@ -28,3 +28,67 @@
   max-width:500px;
   max-height:500px;
 }
+body{
+  background: linear-gradient(200deg,rgba(92,30,166,1) 0%,rgba(200,67,94,1) 100%);
+}
+.c-app, .c-header, .c-main{
+  background: transparent;
+}
+
+.games-index .row {
+  margin: 0px;
+}
+.games-index .card-body {
+  padding: 0px;
+}
+.games-index .col-3 {
+  padding: 0px;
+}
+.games-index .col-9 {
+  padding: 10px 20px;
+}
+.games-index img {
+  width: 100%;
+}
+.games-index p {
+  font-size: 16px;
+  text-align: justify;
+}
+.games-index .card {
+  background-color: rgb(16 7 60 / 78%);
+  color: #fff;
+  border: none;
+}
+.games-index .btn {
+  font-size: 16px;
+  padding: 5px 40px;
+  color: #070707;
+}
+.num-img{
+  width: 70px;
+}
+@media only screen and (max-width: 768px) {
+  .container{
+    padding: 0px;
+  }
+  .container-fluid{
+    padding: 0px;
+  }
+  .games-index p {
+    font-size: 12px;
+    text-align: justify;
+    margin-bottom: 10px;
+  }
+  .games-index h2 {
+    font-size: 14px;
+    margin: 0px;
+  }
+  .games-index .btn {
+    font-size: 12px;
+    padding: 3px 15px;
+    color: #070707;
+  }
+  .games-index .col-9 {
+    padding: 10px 10px;
+  }
+}

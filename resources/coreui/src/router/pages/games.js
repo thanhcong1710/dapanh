@@ -20,17 +20,17 @@ export default {
         component: GamesList
       },
       {
-        path: '/games/:id/detail',
+        path: '/rooms/:id/detail',
         name: 'Chi Tiết Game',
         component: GamesDetail
       },
       {
-        path: '/games/:id/detail_2',
+        path: '/rooms/:id/detail_2',
         name: 'Chi Tiết Game',
         component: GamesDetail_2
       },
       {
-        path: '/games/:id/detail_3',
+        path: '/rooms/:id/detail_3',
         name: 'Chi Tiết Game',
         component: GamesDetail_3
       },
