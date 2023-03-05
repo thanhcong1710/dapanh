@@ -2,8 +2,12 @@
   <div class="games-detail">
     <div class="row">
       <div class="col">
-        Đặt cược <input class="num-img" type="number" min="1" /> 
-          <font-awesome-icon icon="fa-solid fa-user-secret" />
+        Đặt cược <img src="images/mat_sau_anh_mini.png" width="30px"> x <input class="num-img" type="text" min="1" /> 
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <i class="fa fa-plus"></i>
+  <button type="button" class="btn btn-danger"><font-awesome-icon icon="fa-solid fa-minus" /></button>
+  <button type="button" class="btn btn-success"><font-awesome-icon icon="fa-solid fa-user" /></button>
+</div>
       </div>
       <div class="col">Column</div>
     </div>
@@ -72,4 +76,15 @@ export default {
   },
 };
 </script>
-
+<style scoped>
+.games-detail {
+  color: #fff;
+}
+.games-detail .num-img{
+  background: transparent;
+  border: 1px solid #797777;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+}
+</style>
