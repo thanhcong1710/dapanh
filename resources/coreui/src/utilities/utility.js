@@ -1,4 +1,9 @@
 import axios from 'axios'
+const session = () => {
+  return {
+    user_info: JSON.parse(localStorage.getItem("user_info")),
+  }
+}
 function processAuthen(error) {
     // console.log(error.response.data);
     // console.log(error.response.status);
@@ -178,9 +183,17 @@ function fmc (input) {
   }
   return resp
 }
+function getCurrentTime(){
+  const dt = new Date();
+  const padL = (nr, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
+  let resp = padL(dt.getDate())+'/'+padL(dt.getMonth()+1)+'/'+dt.getFullYear()+' '+padL(dt.getHours())+':'+padL(dt.getMinutes())+':'+padL(dt.getSeconds());
+  return resp
+}
 export default {
+    getCurrentTime,
     processAuthen,
     shuffle,
+    session,
     vld,
     fmc,
     g,

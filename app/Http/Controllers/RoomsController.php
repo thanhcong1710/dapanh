@@ -21,7 +21,7 @@ class RoomsController extends Controller
         return response()->json( ['room_id'=>$room_id,'room_code'=>$code, 'status'=>1]);
     }
     public function detail(Request $request, $room_code){
-        $room_info = u::first("SELECT * FROM data_rooms WHERE code = '$room_code'");
+        $room_info = u::first("SELECT *, id AS room_id  FROM data_rooms WHERE code = '$room_code'");
         return response()->json( $room_info);
     }
     public function approveRound(Request $request){

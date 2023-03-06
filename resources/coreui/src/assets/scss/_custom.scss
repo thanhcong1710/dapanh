@@ -67,6 +67,123 @@ body{
 .num-img{
   width: 70px;
 }
+.games-detail {
+  color: #fff;
+}
+.games-detail .num-img {
+  background: transparent;
+  border: 1px solid #797777;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+  width: 60px;
+}
+.games-detail .game-option .btn {
+  margin-top: -8px;
+  margin-left: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+.game-box-chat .card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-wrap: wrap;
+  min-height: 70px;
+  padding: 0 2.25rem;
+  color: var(--bs-card-cap-color);
+  background-color: var(--bs-card-cap-bg);
+  border-bottom: 1px solid #cccccc75;
+}
+.game-box-chat .symbol {
+  display: inline-block;
+  flex-shrink: 0;
+  position: relative;
+  border-radius: 0.475rem;
+}
+.game-box-chat .symbol-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: 10px;
+}
+.game-box-chat .symbol-group.symbol-hover .symbol {
+  cursor: pointer;
+}
+.game-box-chat .symbol-group .symbol {
+  position: relative;
+  z-index: 0;
+  margin-left: -10px;
+  transition: all 0.3s ease;
+}
+.game-box-chat .symbol.symbol-circle,
+.game-box-chat .symbol.symbol-circle > img,
+.game-box-chat .symbol.symbol-circle .symbol-label {
+  border-radius: 50%;
+}
+.game-box-chat .symbol.symbol-35px > img {
+  width: 35px;
+  height: 35px;
+}
+.game-box-chat .card .card-header .card-title {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem;
+  margin-left: 0;
+}
+.game-box-chat .card .card-header .card-title,
+.game-box-chat .card .card-header .card-title .card-label {
+  font-weight: 500;
+  font-size: 1.275rem;
+  color: var(--bs-text-dark);
+}
+.game-box-chat .card .card-body {
+  padding: 2rem 2.25rem;
+  color: var(--bs-card-color);
+}
+.game-box-chat .scroll-y {
+  overflow-y: auto;
+  position: relative;
+  max-height: 176px;
+}
+.game-box-chat .fw-bold {
+  font-weight: 600 !important;
+}
+.game-box-chat .me-1 {
+  margin-right: 0.25rem !important;
+}
+.game-box-chat .text-muted {
+  color: #a1a5b7;
+}
+.game-box-chat .text-gray-900 {
+  color: #181c32;
+}
+.game-box-chat .ms-3 {
+  margin-left: 0.75rem !important;
+}
+.game-box-chat .bg-light-info {
+  background-color: #f8f5ff !important;
+}
+.game-box-chat .mw-lg-400px {
+  max-width: 400px !important;
+}
+.game-box-chat .p-5 {
+  padding: 10px 15px !important;
+}
+
+.game-box-chat .bg-light-primary {
+    background-color: #f1faff !important;
+}
+.game-box-chat .me-3 {
+    margin-right: 0.75rem !important;
+}
+.game-box-chat .input-group-text {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    color: #fff;
+    background-color: #4735df;
+    border-color: #4735df;
+}
 @media only screen and (max-width: 768px) {
   .container{
     padding: 0px;
