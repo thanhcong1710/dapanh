@@ -1,108 +1,97 @@
 <template>
   <div class="games-detail">
-    <div class="game-option row">
-      <div class="col">
-        Đặt cược <img src="images/mat_sau_anh_mini.png" width="30px" />
-        x
-        <input
-          class="num-img"
-          type="text"
-          min="1"
-          v-model="num_img"
-          @change="changeConfigNum"
-        />
-        <button type="button" class="btn btn-success">
-          <i class="fa fa-play" style="margin-right: 6px"></i> Sẵn sàng
-        </button>
-      </div>
-    </div>
     <div class="row">
-      <div class="col-12 col-lg-8">demo 1</div>
-      <div class="col-12 col-lg-4">
-        <div class="d-flex flex-stack py-4">
-          <!--begin::Details-->
-          <div class="d-flex align-items-center">
-            <!--begin::Avatar-->
-            <div class="symbol symbol-45px symbol-circle">
-              <span
-                class="symbol-label bg-light-danger text-danger fs-6 fw-bolder"
-                >M</span
-              >
-            </div>
-            <div class="ms-5">
-              <a
-                href="#"
-                class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                >Melody Macy</a
-              >
-              <div class="fw-semibold text-muted">melody@altbox.com</div>
-            </div>
-          </div>
-          <div class="d-flex flex-column align-items-end ms-2">
-            <span class="text-muted fs-7 mb-1">5 hrs</span>
-          </div>
-        </div>
+      <div class="col-12 col-lg-7">
+        <img src="images/mat_sau_anh_large.png" width="180px" />
       </div>
-    </div>
-    <div class="game-box-chat">
-      <div class="card" id="kt_chat_messenger">
-        <div class="card-header" id="kt_chat_messenger_header">
-          <div class="card-title">
-            <div class="symbol-group symbol-hover">
-              <div class="symbol symbol-35px symbol-circle" v-for="(user, index) in list_user" :key="index">
-                <img alt="Pic" :src="user.avatar"/>
+      <div class="col-12 col-lg-5">
+        <div class="list-user">
+          <div class="box-action">
+            <img src="images/mat_sau_anh_mini.png" width="30px" style="margin-top:-8px"/>
+            x
+            <input
+              class="num-img"
+              type="text"
+              min="1"
+              v-model="num_img"
+              @change="changeConfigNum"
+            />
+            <button type="button" class="btn btn-success" style="float:right">
+              <i class="fa fa-play" ></i> Sẵn sàng
+            </button>
+          </div>
+          <div class="d-flex flex-stack" v-for="(user, index) in list_user" :key="index">
+            <div class="d-flex align-items-center">
+              <div class="symbol symbol-45px symbol-circle">
+                <img :src="user.avatar ? user.avatar : 'img/avatars/1.svg'" width="38px"/>
+              </div>
+              <div class="ms-3">
+                <a class="text-dark-75 text-hover-primary font-weight-bold font-size-lg">{{user.user_name}}</a><br>
+                <p>(142 ảnh)</p>
               </div>
             </div>
+            <div class="d-flex flex-column align-items-end">
+              <i class="fa fa-badge-check"></i>
+            </div>
           </div>
-        </div>
-        <div class="scroll-y card-body" id="kt_chat_messenger_body">
-          <div class="me-n5 pe-5 h-300px h-lg-auto">
-            <div   v-for="(item, index) in chatbox.list_message" :key="index">
-              <div class="d-flex justify-content-start mb-10"  v-if="item.user_id != user.user_id">
-                <div class="d-flex flex-column align-items-start">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="symbol symbol-35px symbol-circle">
-                      <img alt="Pic" :src="item.avatar" />
+          <div style="text-align:center">
+            <button class="btn btn-info" type="button"> <i class="fa fa-link"></i> MỜI</button>
+            <button class="btn btn-info" type="button" @click="toggleBoxChat"><i class="fa fa-comment"></i> CHAT</button>
+            <button class="btn btn-info" type="button" ><i class="fa fa-robot"></i> CHƠI VỚI MÁY</button>
+          </div>
+          <div class="game-box-chat" v-if="show_box_chat">
+            <div class="card" id="kt_chat_messenger">
+              <div class="scroll-y card-body" id="kt_chat_messenger_body">
+                <div class="me-n5 pe-5 h-300px h-lg-auto">
+                  <div   v-for="(item, index) in chatbox.list_message" :key="index">
+                    <div class="d-flex justify-content-start mb-10"  v-if="item.user_id != user.user_id">
+                      <div class="d-flex flex-column align-items-start">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="symbol symbol-35px symbol-circle">
+                            <img alt="Pic" :src="item.avatar" />
+                          </div>
+                          <div class="ms-3">
+                            <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary me-1">{{item.user_name}}</a>
+                            <span class="text-muted fs-7 mb-1">{{item.created_at}}</span>
+                          </div>
+                        </div>
+                        <div class="p-5 rounded bg-light-info text-dark fw-semibold mw-lg-400px text-start">
+                          {{item.content}}
+                        </div>
+                      </div>
                     </div>
-                    <div class="ms-3">
-                      <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary me-1">{{item.user_name}}</a>
-                      <span class="text-muted fs-7 mb-1">{{item.created_at}}</span>
+                    <div class="d-flex justify-content-end mb-10" v-else>
+                      <div class="d-flex flex-column align-items-end">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="me-3">
+                            <span class="text-muted fs-7 mb-1">{{item.created_at}}</span>
+                            <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1" >{{item.user_name}}</a>
+                          </div>
+                          <div class="symbol symbol-35px symbol-circle">
+                            <img alt="Pic" :src="item.avatar" />
+                          </div>
+                        </div>
+                        <div class="p-5 rounded bg-light-primary text-dark fw-semibold mw-lg-400px text-end">
+                          {{item.content}}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="p-5 rounded bg-light-info text-dark fw-semibold mw-lg-400px text-start">
-                    {{item.content}}
                   </div>
                 </div>
               </div>
-              <div class="d-flex justify-content-end mb-10" v-else>
-                <div class="d-flex flex-column align-items-end">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="me-3">
-                      <span class="text-muted fs-7 mb-1">{{item.created_at}}</span>
-                      <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1" >{{item.user_name}}</a>
-                    </div>
-                    <div class="symbol symbol-35px symbol-circle">
-                      <img alt="Pic" :src="item.avatar" />
-                    </div>
-                  </div>
-                  <div class="p-5 rounded bg-light-primary text-dark fw-semibold mw-lg-400px text-end">
-                    {{item.content}}
-                  </div>
+              <div class="card-footer" >
+                <div class="input-group">
+                  <input class="form-control" v-model="chatbox.message" />
+                  <span class="input-group-text btn btn-primary" @click=sendMessage()>Gửi</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="card-footer pt-4" id="kt_chat_messenger_footer">
-          <div class="d-flex flex-stack">
-            <div class="input-group">
-              <textarea class="form-control" aria-label="With textarea" v-model="chatbox.message"></textarea>
-              <span class="input-group-text btn btn-primary" @click=sendMessage()>Gửi</span>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -130,7 +119,8 @@ export default {
         avatar: u.session().user_info.avatar,
         user_name: u.session().user_info.name,
       },
-      list_user:[]
+      list_user:[],
+      show_box_chat: false,
     };
   },
   created() {
@@ -199,12 +189,16 @@ export default {
           room_id: this.room_info.room_id,
           avatar : this.user.avatar,
           content : this.chatbox.message,
-          created_at : u.getCurrentTime()
+          created_at : u.getCurrentTimeChat()
         }
         this.$socket.emit("messageChat", data_mess);
         this.chatbox.message = '';
       }
+    },
+    toggleBoxChat(){
+      this.show_box_chat = this.show_box_chat == true ? false :true;
     }
+
   },
   sockets: {
     dataRoom: function (data) {
@@ -228,5 +222,7 @@ export default {
 };
 </script>
 <style scoped>
-
+.list-user button.btn{
+    font-weight: bold;
+}
 </style>

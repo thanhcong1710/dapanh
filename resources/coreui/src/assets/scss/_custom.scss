@@ -30,6 +30,7 @@
 }
 body{
   background: linear-gradient(200deg,rgba(92,30,166,1) 0%,rgba(200,67,94,1) 100%);
+  font-family: monospace;
 }
 .c-app, .c-header, .c-main{
   background: transparent;
@@ -84,16 +85,14 @@ body{
   font-weight: bold;
   color: #fff;
 }
-.game-box-chat .card .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  flex-wrap: wrap;
-  min-height: 70px;
-  padding: 0 2.25rem;
-  color: var(--bs-card-cap-color);
-  background-color: var(--bs-card-cap-bg);
-  border-bottom: 1px solid #cccccc75;
+.game-box-chat{
+  margin-top: 10px;
+}
+.game-box-chat .card {
+  background-color: #ffffffa1;
+}
+.game-box-chat .card-footer{
+  background-color: transparent;
 }
 .game-box-chat .symbol {
   display: inline-block;
@@ -170,12 +169,17 @@ body{
 .game-box-chat .p-5 {
   padding: 10px 15px !important;
 }
-
+.game-box-chat .text-dark{
+  color: #181c32 !important;
+}
 .game-box-chat .bg-light-primary {
     background-color: #f1faff !important;
 }
 .game-box-chat .me-3 {
     margin-right: 0.75rem !important;
+}
+.game-box-chat .mb-10 {
+  margin-bottom: 10px;
 }
 .game-box-chat .input-group-text {
     border-top-left-radius: 0px;
@@ -183,6 +187,72 @@ body{
     color: #fff;
     background-color: #4735df;
     border-color: #4735df;
+}
+.list-user{
+  background: #151c8799;
+  padding: 10px;
+  border-radius: 10px;
+}
+.list-user h2{
+      text-align: center;
+    font-size: 18px;
+    color: rgb(92, 255, 182);
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+.list-user .symbol-circle img{
+  border-radius: 50%;
+}
+.list-user .flex-stack{
+  background: rgb(235 229 244 / 83%);
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: rgb(48, 26, 107);
+  margin-bottom: 10px ;
+}
+.list-user .flex-stack .align-items-center{
+  width: calc(100% - 50px);
+}
+.list-user .align-items-end{
+  width: 50px;
+  align-items: center !important;
+  margin: auto;
+}
+.list-user .align-items-center .ms-3{
+  margin-left: 10px;
+}
+.list-user .align-items-center p{
+  margin: 0px;
+  color: #575656e3;
+}
+.list-user .align-items-end i{
+  font-size: 24px;
+  color: #118438;
+}
+.game-box-chat .card-footer {
+  padding: 0px;
+  border: none;
+}
+.game-box-chat .card .card-body{
+  padding: 10px;
+  min-height: 100px;
+}
+.list-user .box-action{
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 10px 0px;
+}
+.game-box-chat .form-control{
+  color:#121111
+}
+.c-header.c-header-with-subheader{
+  border: none;
+}
+.c-footer{
+  background: transparent;
+  border: none;
 }
 @media only screen and (max-width: 768px) {
   .container{
