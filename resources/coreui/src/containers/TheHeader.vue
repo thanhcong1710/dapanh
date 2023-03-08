@@ -1,47 +1,13 @@
 <template>
-  <CHeader fixed with-subheader dark>
-    <!-- <CToggler
-      in-header
-      class="ml-3 d-lg-none"
-      @click="$store.commit('toggleSidebarMobile')"
-    /> -->
-    <CToggler
-      in-header
-      class="ml-3 d-md-down-none"
-      @click="$store.commit('toggleSidebarDesktop')"
-    />
-    <CHeaderBrand class="mx-auto d-lg-none" to="/">
-      <CIcon name="logo" height="48" alt="Logo" />
-    </CHeaderBrand>
-    <CHeaderNav class="mr-4">
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <select v-model="language" @change="changeLanguage">
-            <option value="vi">VI</option>
-            <option value="en">EN</option>
-          </select>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-envelope-open" />
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-bell" />
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-list" />
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-envelope-open" />
-        </CHeaderNavLink>
-      </CHeaderNavItem>
+  <CHeader fixed with-subheader>
+    <a class="header-brand" href="#" style="width: calc(100% - 150px)">
+      <img
+        src="img/brand/coreui-vue-logo.svg"
+        alt="logo"
+        style="width: 150px; margin-top: 5px"
+      />
+    </a>
+    <CHeaderNav>
       <TheHeaderDropdownAccnt />
     </CHeaderNav>
   </CHeader>
@@ -56,9 +22,7 @@ export default {
     TheHeaderDropdownAccnt,
   },
   data() {
-    return {
-      language: this.$i18n.locale,
-    };
+    return {};
   },
   sockets: {
     connect: function () {
@@ -66,19 +30,10 @@ export default {
     },
   },
   created() {
-    this.$socket.emit('userConnected', {
-      'user_id' : '123',
+    this.$socket.emit("userConnected", {
+      user_id: "123",
     });
   },
-  methods: {
-    changeLanguage() {
-      localStorage.setItem("language", this.language);
-      this.$i18n.locale = this.language;
-      fetch(
-        `api/language/${this.language}?token=` +
-          localStorage.getItem("api_token")
-      );
-    },
-  },
+  methods: {},
 };
 </script>

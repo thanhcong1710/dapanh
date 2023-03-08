@@ -9,20 +9,11 @@ use App\Providers\UtilityServiceProvider as u;
 
 class SocketController extends Controller
 {
-    public function __construct()
-    {
-        $this->baseUri = "127.0.0.1";
-        $this->port = 3000;
-    }
     public static function pushData($user_id,$event,$data){
-        $arr=[
-            'user_id'=>$user_id,
-            'event'=>$event,
-            'data'=>$data
-        ];
-        
+        $baseUri = "127.0.0.1";
+        $port = 3000;
         $socketio = new SocketIO();
-        if ($socketio->send($this->baseUri, $this->port , 'pushData', json_encode($arr))){
+        if ($socketio->send($baseUri, $port , $event, json_encode($data))){
             u::insertSimpleRow( array(
                 'user_id'=>$user_id,
                 'event'=>$event,

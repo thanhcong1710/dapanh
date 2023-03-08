@@ -21,43 +21,72 @@ class RoomsController extends Controller
         return response()->json( ['room_id'=>$room_id,'room_code'=>$code, 'status'=>1]);
     }
     public function detail(Request $request, $room_code){
-        $room_info = u::first("SELECT *, id AS room_id  FROM data_rooms WHERE code = '$room_code'");
+        $room_info = u::first("SELECT *, id AS room_id,  
+                (SELECT num_img FROM users WHERE id= ".auth()->user()->id.") AS user_num_img
+            FROM data_rooms WHERE code = '$room_code'");
         return response()->json( $room_info);
     }
     public function approveRound(Request $request){
         $user_id = auth()->user()->id;
         $room_info = u::first("SELECT id, curr_round FROM data_rooms WHERE id = $request->room_id ");
-        $round_info = u::first("SELECT id, is_only, num_img FROM data_rounds WHERE id = $room_info->curr_round AND status=0");
+        $curr_round = $room_info && $room_info->curr_round ? $room_info->curr_round : 0;
+        $round_info = u::first("SELECT id, is_only, num_img FROM data_rounds WHERE id = $curr_round AND status=0");
         if(!$round_info){
             $round_id= u::insertSimpleRow([
                 'room_id' => $request->room_id,
                 'num_img' => $request->num_img,
                 'created_at' => date('Y-m-d H:i:s'),
                 'is_only' => $request->is_only,
-                'status' => 0
             ],'data_rounds');
             u::updateSimpleRow(['curr_round' => $round_id],['id'=>$request->room_id], 'data_rooms');
         }else{
             $round_id = $round_info->id; 
             if($round_info->is_only != $request->is_only || $round_info->num_img != $request->num_img){
-                u::updateSimpleRow(['is_only' => $request->is_only,'num_img' => $request->num_img],['id'=>$round_id], 'data_rounds');
+                u::updateSimpleRow([
+                    'is_only' => $request->is_only,
+                    'num_img' => $request->num_img
+                ],['id'=>$round_id], 'data_rounds');
             }
         }
         $map_user_info = u::first("SELECT id FROM data_user_round WHERE round_id = $round_id AND user_id= $user_id");
         if($map_user_info){
             u::updateSimpleRow([
                 'updated_at' => date('Y-m-d H:i:s'),
-                'status' => 1
+                'status' => $request->user_ready
             ],['id'=>$map_user_info->id],'data_user_round');
         }else{
             u::insertSimpleRow([
                 'user_id' => $user_id,
                 'room_id' => $request->room_id,
                 'num_img' => $request->num_img,
+                'round_id' => $round_id,
                 'updated_at' => date('Y-m-d H:i:s'),
-                'status' => 1
+                'status' => $request->user_ready
             ],'data_user_round');
         }
+        $data_push = array(
+            'room_id' => $request->room_id,
+            'action' => 'approveRound',
+            'user_id' => $user_id,
+            'num_img' => $request->num_img,
+            'user_ready'  => $request->user_ready,
+        );
+        SocketController::pushData($user_id,'dataRoom', $data_push);
+        return response()->json( ['status'=>1]);
+    }
+    public function changeConfigNum(Request $request){
+        $room_info = u::first("SELECT id, curr_round FROM data_rooms WHERE id = $request->room_id ");
+        $curr_round = $room_info && $room_info->curr_round ? $room_info->curr_round : 0;
+        $round_info = u::first("SELECT id, is_only, num_img FROM data_rounds WHERE id = $curr_round AND status=0");
+        if($round_info){
+            u::updateSimpleRow(['status'=>0],['round_id'=>$round_info->id],'data_user_round');
+        }
+        $data_push = array(
+            'room_id' => $request->room_id,
+            'action' => 'changeConfigNum',
+            'num_img' => $request->num_img
+        );
+        SocketController::pushData(auth()->user()->id,'dataRoom', $data_push);
         return response()->json( ['status'=>1]);
     }
 

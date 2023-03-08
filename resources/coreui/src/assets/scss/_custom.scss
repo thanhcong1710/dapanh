@@ -227,9 +227,13 @@ body{
   margin: 0px;
   color: #575656e3;
 }
-.list-user .align-items-end i{
+.list-user .align-items-end i.active{
   font-size: 24px;
-  color: #118438;
+  color: #0f923b;
+}
+.list-user .align-items-end i.waiting{
+  font-size: 24px;
+  color: #6d6e6de8;
 }
 .game-box-chat .card-footer {
   padding: 0px;

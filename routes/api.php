@@ -25,6 +25,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::post('/rooms/create', 'RoomsController@create')->name('rooms.create');
         Route::get('/rooms/detail/{room_code}', 'RoomsController@detail')->name('rooms.create');
         Route::post('/rounds/approve', 'RoomsController@approveRound')->name('rooms.rounds.approve');
+        Route::post('/rounds/changeConfigNum', 'RoomsController@changeConfigNum')->name('rooms.rounds.changeConfigNum');
         Route::post('/rounds/end', 'RoomsController@endRound')->name('rooms.rounds.approve');
         Route::post('/rounds-2/approve', 'RoomsController@approveRound2')->name('rooms.rounds_2.approve');
         Route::post('/rounds-2/select-option', 'RoomsController@selectOption2')->name('rooms.rounds_2.selectOption');
