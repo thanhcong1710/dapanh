@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 col-lg-7 games-detail-show" style="text-align:center">
         <i class="fa fa-rotate" style="position: absolute;top: 0px;left: 0px;font-size: 24px;"></i>
-        <div :class="'flip-box '+ (flip_box.active ? 'active':'')">
+        <div :class="'flip-box '+ (flip_box.active? 'active':'')">
           <div class="flip-box-inner">
             <div class="flip-box-front">
               <img src="images/mat_sau_anh_large.png" >
