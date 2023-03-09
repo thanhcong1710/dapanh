@@ -1,20 +1,22 @@
 <template>
   <div class="games-detail">
     <div class="row">
-      <div class="col-12 col-lg-7 games-detail-show" style="text-align:center">
-        <i class="fa fa-rotate" style="position: absolute;top: 0px;left: 0px;font-size: 24px;"></i>
-        <div :class="'flip-box '+ (flip_box.active? 'active':'')">
-          <div class="flip-box-inner">
-            <div class="flip-box-front">
-              <img src="images/mat_sau_anh_large.png" >
-            </div>
-            <div class="flip-box-back">
-               <img src="" >
+      <div class="col-12 col-lg-6 games-detail-show" style="text-align:center">
+        <div>
+          <i class="fa fa-rotate" style="position: absolute;top: 0px;left: 0px;font-size: 24px;" ></i>
+          <div :class="'flip-box '+ (flip_box.active? 'active':'')">
+            <div class="flip-box-inner">
+              <div class="flip-box-front">
+                <img src="images/mat_sau_anh_large.png" width="100%" >
+              </div>
+              <div class="flip-box-back">
+                <img src="images/items/image_1_large-min.jpg" width="100%">
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-12 col-lg-5">
+      <div class="col-12 col-lg-6">
         <div class="list-user">
           <div class="box-action" v-if="user.user_id == room_info.created_by">
             <img src="images/mat_sau_anh_mini.png" width="30px" style="margin-top:-8px"/>
@@ -24,18 +26,10 @@
               type="text"
               min="1"
               v-model="num_img"
+              @input="onlyNumbers"
               @change="changeConfigNum"
             />
-            <transition appear
-              :enter-active-class="num_show.enterClass">
-              <div class="box" :key="num_show.show">
-                {{num_img}}
-              </div>
-            </transition>
-            <button type="button" class="btn btn-success" style="float:right" @click="showModalError()"  v-if="!round_ready">
-              <i class="fa fa-play" ></i> Bắt đầu
-            </button>
-            <button type="button" class="btn btn-success" style="float:right" @click="endGame()"  v-else>
+            <button type="button" class="btn btn-success" style="float:right" :disabled="btn_endgame" @click="endGame()">
               <i class="fa fa-play" ></i> Bắt đầu
             </button>
           </div>
@@ -60,13 +54,13 @@
               </div>
             </div>
             <div class="d-flex flex-column align-items-end">
-              <i :class="'fa fa-badge-check '+(user.user_ready?'active':'waiting')"></i>
+              <i :class="'fa-solid fa-square-check '+(user.user_ready || user.user_id == room_info.created_by ?'active':'waiting')"></i>
             </div>
           </div>
           <div style="text-align:center">
             <button class="btn btn-info" type="button"> <i class="fa fa-link"></i> MỜI</button>
             <button class="btn btn-info" type="button" @click="toggleBoxChat"><i class="fa fa-comment"></i> CHAT</button>
-            <button class="btn btn-info" type="button" ><i class="fa fa-robot"></i> CHƠI VỚI MÁY</button>
+            <button class="btn btn-info" type="button" @click="addBot" :disabled="add_bot==1"><i class="fa fa-robot"></i> CHƠI VỚI MÁY</button>
           </div>
           <div class="game-box-chat" v-if="show_box_chat">
             <div class="card" id="kt_chat_messenger">
@@ -120,7 +114,28 @@
         
       </div>
     </div>
-    
+    <CModal
+      :title="modal.title"
+      :show.sync="modal.show"
+      :color="modal.color"
+      :closeOnBackdrop="modal.closeOnBackdrop"
+      :size="modal.size"
+    >
+      <div>
+        <div class="form-in-list">
+          <p style="color:#333">{{modal.error_message}}</p>
+        </div>
+      </div>
+      <template #header>
+        <h5 class="modal-title">{{ modal.title }}</h5>
+      </template>
+      <template #footer>
+       
+        <CButton :color="'btn btn-secondary'" @click="modal.show=false" type="button"
+          >Đóng</CButton
+        >
+      </template>
+    </CModal>
   </div>
 </template>
 
@@ -132,12 +147,13 @@ export default {
   name: "Games",
   data: () => {
     return {
-      enterClass:'animated flip',
-      num_show:{
-        enterClass:'',
+      modal: {
+        title: "CẬP NHÂT TRẠNG THÁI KHÁCH HÀNG",
         show: false,
-        count_interval:0,
-        id_interval:''
+        color: "info",
+        closeOnBackdrop: true,
+        size:"lg",
+        error_message:""
       },
       flip_box:{
         active: true,
@@ -165,12 +181,15 @@ export default {
       list_user:[],
       show_box_chat: false,
       round_ready: 1,
+      add_bot:0,
+      btn_endgame: false,
     };
   },
   created() {
     u.g(`/api/rooms/detail/${this.$route.params.id}`)
       .then((response) => {
         this.room_info = response.data;
+        this.user.user_num_img = this.room_info.user_num_img
         this.$socket.emit("userJoinRoom", {
           action: 'joinRoom',
           room_id: this.room_info.room_id,
@@ -180,24 +199,15 @@ export default {
           user_num_img: this.room_info.user_num_img,
           user_ready: this.user.user_ready
         });
+        if(user.user_id == this.room_info.created_by){
+          this.changeUserReady(1)
+        }
       })
       .catch((e) => {
         u.processAuthen(e);
       });
   },
   methods: {
-    showNumImg(){
-      this.num_show.enterClass = 'animated fadeOut'
-      this.num_show.count_interval =0 
-      this.num_show.id_interval = setInterval(this.animationNumImg, 500);
-    },
-    animationNumImg(){
-      this.num_show.count_interval ++
-      this.num_show.show = !this.num_show.show
-      if(this.num_show.count_interval==15){
-        clearInterval(this.num_show.id_interval);
-      }
-    },
     changeUserReady(status) {
       this.user.user_ready = status
       const data = {
@@ -230,34 +240,50 @@ export default {
       }
     },
     endGame() {
-      const data = {
-        room_id: this.room_info.room_id,
-        num_img: this.num_img,
-      };
-      this.loadingGame();
-      // u.p(`/api/rounds/end`, data)
-      //   .then((response) => {
-      //     if (response.status == 1) {
-      //     }
-      //   })
-      //   .catch((e) => {
-      //     u.processAuthen(e);
-      //   });
+      if(this.list_user.length>1){
+        const data = {
+          room_id: this.room_info.room_id,
+          num_img: this.num_img,
+        };
+        this.loadingGame();
+        this.btn_endgame=true;
+        u.p(`/api/rounds/end`, data)
+          .then((response) => {
+            if (response.status == 1) {
+            }
+          })
+          .catch((e) => {
+            u.processAuthen(e);
+          });
+      }else{
+        this.modal.show=true
+        this.modal.title= "THÔNG BÁO"
+        this.modal.error_message= "Mời thêm bạn hoặc chọn chơi với máy để bắt đầu"
+      }
+    },
+    onlyNumbers() {  
+      this.num_img = this.num_img.replace(/[^0-9]/g, '');
     },
     changeConfigNum() {
-      const data = {
-        user_id: this.user.user_id,
-        room_id: this.room_info.room_id,
-        num_img: this.num_img,
-      };
-       u.p(`/api/rounds/changeConfigNum`, data)
-        .then((response) => {
-          if (response.data.status == 1) {
-          }
-        })
-        .catch((e) => {
-          u.processAuthen(e);
-        });
+      if(this.user.user_num_img< this.num_img){
+        this.modal.show=true
+        this.modal.title= "THÔNG BÁO"
+        this.modal.error_message= "Bạn không đủ ảnh để đặt cược"
+      }else{
+        const data = {
+          user_id: this.user.user_id,
+          room_id: this.room_info.room_id,
+          num_img: this.num_img,
+        };
+        u.p(`/api/rounds/changeConfigNum`, data)
+          .then((response) => {
+            if (response.data.status == 1) {
+            }
+          })
+          .catch((e) => {
+            u.processAuthen(e);
+          });
+      }
     },
     pusDataRound(data) {
       this.$socket.emit("dataRoom", data);
@@ -279,8 +305,16 @@ export default {
     toggleBoxChat(){
       this.show_box_chat = this.show_box_chat == true ? false :true;
     },
-    showModalError(){
-
+    addBot(){
+      this.add_bot=1
+      let user_bot = {
+        user_id: 999999,
+        avatar: 'img/avatars/2.svg',
+        user_name: 'Người Máy',
+        user_num_img: 0,
+        user_ready:1
+      }
+      this.list_user.push(user_bot)
     }
   },
   sockets: {
@@ -304,10 +338,11 @@ export default {
         }
       }else if(data.action==='changeConfigNum'){
         for (let i = 0; i < this.list_user.length; i++) {
-          this.list_user[i].user_ready= 0;
+          if(this.list_user[i].user_id != 999999){
+            this.list_user[i].user_ready= 0;
+          }
         }
         this.num_img = data.num_img
-        this.showNumImg()
       }
     },
     messageChat: function (data) {
@@ -317,53 +352,5 @@ export default {
 };
 </script>
 <style scoped>
-.list-user button.btn{
-    font-weight: bold;
-}
-.animated {
-  -webkit-animation-duration: 20s;
-  -webkit-animation-delay: 0s;
-}
-.box {
-  width: 80px;
-}
-.flip-box {
-  background-color: transparent;
-  width: 300px;
-  height: 200px;
-  border: 1px solid #f1f1f1;
-  perspective: 1000px;
-}
 
-.flip-box-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  transition: transform 0.5s;
-  transform-style: preserve-3d;
-}
-
-.flip-box.active .flip-box-inner {
-  transform: rotateY(180deg);
-}
-
-.flip-box-front, .flip-box-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-.flip-box-front {
-  background-color: #bbb;
-  color: black;
-}
-
-.flip-box-back {
-  background-color: #555;
-  color: white;
-  transform: rotateY(180deg);
-}
 </style>

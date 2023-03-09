@@ -1,6 +1,6 @@
 <template>
   <CHeader fixed with-subheader>
-    <a class="header-brand" href="#" style="width: calc(100% - 150px)">
+    <a class="header-brand" href="#" style="width: calc(100% - 60px)">
       <img
         src="img/brand/coreui-vue-logo.svg"
         alt="logo"
