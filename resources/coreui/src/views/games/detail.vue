@@ -199,7 +199,7 @@ export default {
           user_num_img: this.room_info.user_num_img,
           user_ready: this.user.user_ready
         });
-        if(user.user_id == this.room_info.created_by){
+        if(this.user.user_id == this.room_info.created_by){
           this.changeUserReady(1)
         }
       })

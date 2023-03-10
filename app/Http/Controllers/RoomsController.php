@@ -37,6 +37,7 @@ class RoomsController extends Controller
                 'num_img' => $request->num_img,
                 'created_at' => date('Y-m-d H:i:s'),
                 'is_only' => $request->is_only,
+                'status'=>0
             ],'data_rounds');
             u::updateSimpleRow(['curr_round' => $round_id],['id'=>$request->room_id], 'data_rooms');
         }else{
@@ -113,6 +114,7 @@ class RoomsController extends Controller
                 ];
             }
         }
+        dd($arr_data);
         $arr_data_res = u::processResult($arr_data, $request->num_img);
         foreach($arr_data_res AS  $row){
             if($row['user_id'] > 0){
