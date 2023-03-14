@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 col-lg-6 games-detail-show" style="text-align:center">
         <div>
-          <i class="fa fa-rotate" style="position: absolute;top: 0px;left: 0px;font-size: 24px;cursor: pointer;" @click="showModalChangeImg()"></i>
+          <i class="fa fa-rotate" @click="showModalChangeImg()"></i>
           <div :class="'flip-box '+ (flip_box.active? 'active':'')">
             <div class="flip-box-inner">
               <div class="flip-box-front">
@@ -15,9 +15,9 @@
             </div>
           </div>
         </div>
-        <div class="box" v-if="show_end_round.show">
-          <span>{{show_end_round.title}}</span>
-          <span>{{show_end_round.num}}</span>
+        <div class="box zoom-in-zoom-out" v-if="show_end_round.show">
+          <span>{{show_end_round.title}}</span><br>
+          <span v-if="show_end_round.num!=0">{{show_end_round.num}}</span>
         </div>
       </div>
       <div class="col-12 col-lg-6">
@@ -299,10 +299,10 @@ export default {
       }
       if(user_result.img_add>0){
         this.show_end_round.title="THẮNG"
-        this.show_end_round.num=user_result.img_add
+        this.show_end_round.num="+"+user_result.img_add
       }else if(user_result.img_minus>0){
         this.show_end_round.title="THUA"
-        this.show_end_round.num=user_result.img_minus
+        this.show_end_round.num="-"+user_result.img_minus
       }else{
         this.show_end_round.title="HÒA"
         this.show_end_round.num=0
@@ -499,13 +499,5 @@ export default {
 </script>
 <style>
 
-.box {
-  text-align: center;
-  font-size: 30px;
-  color: #fff;
-  line-height: 200px;
-  margin: 10px;
-  position: absolute;
-  z-index: 10;
-}
+
 </style>

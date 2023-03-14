@@ -308,17 +308,19 @@ background-color: #555;
 color: white;
 transform: rotateY(180deg);
 }
-.c-wrapper:not(.c-wrapper-fluid) {
-  height: 92vh;
-}
-.c-wrapper {
-  width: 100%;
-  max-width: 900px;
-  margin: 20px auto;
-  border: 4px rgba(29,29,27,.15) solid;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: inset 0px 2px 0px 0px rgb(255 255 255 / 15%), 0px 3px 0px 0px rgb(255 255 255 / 15%);
+@media only screen and (min-width: 768px) {
+  .c-wrapper:not(.c-wrapper-fluid) {
+    height: 92vh;
+  }
+  .c-wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+    border: 4px rgba(29,29,27,.15) solid;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: inset 0px 2px 0px 0px rgb(255 255 255 / 15%), 0px 3px 0px 0px rgb(255 255 255 / 15%);
+  }
 }
 .container-fluid{
   padding: 0px;
@@ -355,13 +357,52 @@ transform: rotateY(180deg);
   border-radius: 6px;
   cursor: pointer;
 }
-
+.games-detail .fa-rotate{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.c-wrapper:not(.c-wrapper-fluid) .c-body{
+  overflow-y:hidden
+}
+.zoom-in-zoom-out {
+  animation: zoom-in-zoom-out 2s ease-out infinite;
+}
+.box {
+  text-align: center;
+  font-size: 30px;
+  color: #fff;
+  line-height: 30px;
+  left: 40%;
+  top: 20%;
+  position: absolute;
+  z-index: 10;
+}
+@keyframes zoom-in-zoom-out {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.5, 1.5);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
 @media only screen and (max-width: 768px) {
   .container{
-    padding: 0px;
+    padding: 10px;
+  }
+  .c-main{
+    padding-top: 15px;
   }
   .container-fluid{
     padding: 0px;
+  }
+  .games-index .col-12{
+    padding: 0px 5px;
   }
   .games-index p {
     font-size: 12px;
@@ -379,5 +420,17 @@ transform: rotateY(180deg);
   }
   .games-index .col-9 {
     padding: 10px 10px;
+  }
+  .games-detail .games-detail-show{
+    min-height: 300px;
+  }
+  .modal_change_img .modal-info .modal-content{
+    border: none;
+  }
+  .modal_change_img .modal-body{
+    max-height: 48vh;
+  }
+  .games-detail .fa-rotate{
+    left: 20px;
   }
 }
