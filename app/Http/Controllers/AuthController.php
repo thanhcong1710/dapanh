@@ -93,7 +93,7 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token, $email)
     {
-        $user_info = u::first("SELECT id, id AS user_id, `name`, avatar FROM users WHERE email='$email'");
+        $user_info = u::first("SELECT id, id AS user_id, `name`, avatar,img_show FROM users WHERE email='$email'");
 
         return response()->json([
             'access_token' => $token,

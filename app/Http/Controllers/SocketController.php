@@ -20,9 +20,9 @@ class SocketController extends Controller
                 'created_at'=>date('Y-m-d H:i:s'),
                 'data'=>json_encode($data)
             ),'log_socket');
-            echo 'we sent the message and disconnected: '.json_encode($data);
+            // echo 'we sent the message and disconnected: '.json_encode($data);
         } else {
-            echo 'Sorry, we have a mistake :\'(';
+            // echo 'Sorry, we have a mistake :\'(';
         }
     }
 }

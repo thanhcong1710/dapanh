@@ -163,7 +163,7 @@ export default {
   outline: none;
 }
 .animated {
-  -webkit-animation-duration: 20s;
+  -webkit-animation-duration: 3s;
   -webkit-animation-delay: 0s;
 }
 </style>

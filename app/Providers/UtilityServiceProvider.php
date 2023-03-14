@@ -174,7 +174,7 @@ class UtilityServiceProvider extends ServiceProvider
 		}else{
 			$total_charge = $i*$num_img;
 		}
-		$tb_charge = ceil($total_charge/(count($arr_data)-$i));
+		$tb_charge = (count($arr_data)-$i) ? ceil($total_charge/(count($arr_data)-$i)):0;
 		foreach($arr_data AS $k=>$row){
 			if($row['response_game']==1){
 				$arr_data[$k]['img_add'] = $total_charge > 0 ? $num_img : 0;
@@ -187,43 +187,76 @@ class UtilityServiceProvider extends ServiceProvider
 		return $arr_data;
 	}
 	public static function addImgRand($num_img, $user_id, $num_type =5){
-		$list_img = u::query("SELECT id FROM data_images WHERE status=1");
+		$list_img = self::query("SELECT id FROM data_images WHERE status=1");
 		$arr_img = array();
 		$num_type = $num_type > $num_img ? $num_img : $num_type;
 		$randIndex =  array_rand($list_img,$num_type);
+		if($num_type==1){
+			$randIndex=array(
+				'0'=>$randIndex
+			);
+		}
+		$list_img_id = '';
 		for($i=0;$i<$num_type;$i++){
 			if($i==$num_type-1){
-				$arr_img[$i]= [
-					'img_id'=>$list_img[$randIndex[$i]],
+				$arr_img[$list_img[$randIndex[$i]]->id]= [
+					'img_id'=>$list_img[$randIndex[$i]]->id,
 					'img_num'=>$num_img - (ceil($num_img/$num_type) * ($num_type-1)),
 					'user_id' => $user_id
 				];
 			}else{
-				$arr_img[$i]= [
-					'img_id'=>$list_img[$randIndex[$i]],
+				$arr_img[$list_img[$randIndex[$i]]->id]= [
+					'img_id'=>$list_img[$randIndex[$i]]->id,
 					'img_num'=>ceil($num_img/$num_type),
 					'user_id' => $user_id
 				];
 			}
+			$list_img_id.= $list_img_id? ','.$list_img[$randIndex[$i]]->id : $list_img[$randIndex[$i]]->id;
 		}
-		u::query("UPDATE users SET num_img = (SELECT count(id) FROM data_user_image WHERE user_id=$user_id AND status=1) WHERE id=$user_id");
+		$user_img = self::query("SELECT id,user_id,img_id,num FROM data_user_image WHERE user_id=$user_id AND img_id IN($list_img_id) AND status=1");
+		$arr_update =array();
+		$sql_udpate = "INSERT INTO data_user_image (id, num) VALUES "; 
+		$sql_insert = "INSERT INTO data_user_image (user_id, img_id, num, `status`) VALUES "; 
+		$check_insert = false;
+		foreach($user_img AS $us){
+			$tmp_num = $us->num+$arr_img[$us->img_id]['img_num'];
+			$sql_udpate.="($us->id,$tmp_num),";
+			array_push($arr_update,$us->img_id);
+		}
+		if(count($user_img)>0){
+			$sql_udpate = substr($sql_udpate, 0, -1);
+			$sql_udpate = $sql_udpate." ON DUPLICATE KEY UPDATE num = VALUES(num)";
+			self::query($sql_udpate);
+		}
+		foreach($arr_img AS $ai){
+			if(!in_array($ai['img_id'],$arr_update)){
+				$sql_insert .= "($user_id,'".$ai['img_id']."','".$ai['img_num']."', 1),";
+				$check_insert = true;
+			}
+		}
+		if($check_insert){
+			$sql_insert = substr($sql_insert, 0, -1);
+			self::query($sql_insert);
+		}
+		
+		self::query("UPDATE users SET num_img = (SELECT SUM(num) FROM data_user_image WHERE user_id=$user_id AND status=1) WHERE id=$user_id");
 		return $arr_img;
 	}
 	public static  function minusImg($num_img, $user_id){
-		$list_img = u::query("SELECT * FROM data_user_image WHERE status=1 ORDER BY num DESC");
+		$list_img = self::query("SELECT * FROM data_user_image WHERE status=1 ORDER BY num DESC");
 		$i=0;
 		while($num_img>0 && $i < count($list_img)){
 			if($list_img[$i]->num < $num_img){
-				u::query("DELETE FROM data_user_image WHERE id = ".$list_img[$i]->id);
+				self::query("DELETE FROM data_user_image WHERE id = ".$list_img[$i]->id);
 				$num_img = $num_img - $list_img[$i]->num;
 			}else{
 				$tmp = $list_img[$i]->num - $num_img;
-				u::query("UPDATE data_user_image SET num = $tmp  WHERE id=".$list_img[$i]->id);
+				self::query("UPDATE data_user_image SET num = $tmp  WHERE id=".$list_img[$i]->id);
 				$num_img =0;
 			}
 			$i++;
 		}
-		u::query("UPDATE users SET num_img = (SELECT count(id) FROM data_user_image WHERE user_id=$user_id AND status=1) WHERE id=$user_id");
+		self::query("UPDATE users SET num_img = (SELECT SUM(num) FROM data_user_image WHERE user_id=$user_id AND status=1) WHERE id=$user_id");
 		return true;
 	}
 	public static  function genSelectOptionGame2($user_option){

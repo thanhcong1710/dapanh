@@ -212,6 +212,15 @@ body{
   color: rgb(48, 26, 107);
   margin-bottom: 10px ;
 }
+.list-user .flex-stack.user_status_1{
+  background: rgb(159 229 158 / 89%);
+}
+.list-user .flex-stack.user_status_2{
+  background: rgb(238 161 150 / 89%);
+}
+.list-user .flex-stack.user_status_3{
+  background: rgb(238 234 150 / 89%);
+}
 .list-user .flex-stack .align-items-center{
   width: calc(100% - 50px);
 }
@@ -225,7 +234,7 @@ body{
 }
 .list-user .align-items-center p{
   margin: 0px;
-  color: #575656e3;
+  color: rgb(21 20 20 / 89%);
 }
 .list-user .align-items-end i.active{
   font-size: 24px;
@@ -314,6 +323,39 @@ transform: rotateY(180deg);
 .container-fluid{
   padding: 0px;
 }
+.flip-box-back img{
+  border-radius: 6px;
+}
+.flip-box-front img{
+  border-radius: 6px;
+}
+.modal_change_img .modal-footer{
+  display: none ;
+}
+.modal_change_img .modal-title{
+    font-weight: bold;
+}
+.modal_change_img .modal-header{
+    padding: 10px 20px;
+}
+.modal_change_img .modal-header .btn-close{
+  color: #fff;
+  margin-top: -5px;
+}
+.modal_change_img .col-4{
+  padding: 10px;
+}
+.modal_change_img .modal-body{
+  padding: 10px 20px;
+  max-height: 82vh;
+  overflow-y: auto;
+  height: auto;
+}
+.modal_change_img .modal_image{
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 768px) {
   .container{
     padding: 0px;

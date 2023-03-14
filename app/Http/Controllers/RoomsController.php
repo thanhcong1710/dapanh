@@ -30,21 +30,19 @@ class RoomsController extends Controller
         $user_id = auth()->user()->id;
         $room_info = u::first("SELECT id, curr_round FROM data_rooms WHERE id = $request->room_id ");
         $curr_round = $room_info && $room_info->curr_round ? $room_info->curr_round : 0;
-        $round_info = u::first("SELECT id, is_only, num_img FROM data_rounds WHERE id = $curr_round AND status=0");
+        $round_info = u::first("SELECT id, num_img FROM data_rounds WHERE id = $curr_round AND status=0");
         if(!$round_info){
             $round_id= u::insertSimpleRow([
                 'room_id' => $request->room_id,
                 'num_img' => $request->num_img,
                 'created_at' => date('Y-m-d H:i:s'),
-                'is_only' => $request->is_only,
                 'status'=>0
             ],'data_rounds');
             u::updateSimpleRow(['curr_round' => $round_id],['id'=>$request->room_id], 'data_rooms');
         }else{
             $round_id = $round_info->id; 
-            if($round_info->is_only != $request->is_only || $round_info->num_img != $request->num_img){
+            if($round_info->num_img != $request->num_img){
                 u::updateSimpleRow([
-                    'is_only' => $request->is_only,
                     'num_img' => $request->num_img
                 ],['id'=>$round_id], 'data_rounds');
             }
@@ -76,11 +74,11 @@ class RoomsController extends Controller
         return response()->json( ['status'=>1]);
     }
     public function changeConfigNum(Request $request){
-        $room_info = u::first("SELECT id, curr_round FROM data_rooms WHERE id = $request->room_id ");
+        $room_info = u::first("SELECT id, curr_round, created_by FROM data_rooms WHERE id = $request->room_id ");
         $curr_round = $room_info && $room_info->curr_round ? $room_info->curr_round : 0;
-        $round_info = u::first("SELECT id, is_only, num_img FROM data_rounds WHERE id = $curr_round AND status=0");
+        $round_info = u::first("SELECT id, num_img FROM data_rounds WHERE id = $curr_round AND status=0");
         if($round_info){
-            u::updateSimpleRow(['status'=>0],['round_id'=>$round_info->id],'data_user_round');
+            u::query("UPDATE data_user_round SET `status`=0 WHERE round_id= $round_info->id AND user_id!= $room_info->created_by");
         }
         $data_push = array(
             'room_id' => $request->room_id,
@@ -94,38 +92,43 @@ class RoomsController extends Controller
     public function endRound(Request $request){
         $room_info = u::first("SELECT id, curr_round FROM data_rooms WHERE id = $request->room_id ");
         $list_user = u::query("SELECT user_id FROM data_user_round WHERE round_id = $room_info->curr_round AND status=1");
-        if($request->is_only){
-            $arr_data = array(
-                '0' => [
-                    'user_id' => $list_user[0]->user_id,
-                    'respone_game' => u::getResponseGameIsOnly(1),
-                ],
-                '1' => [
-                    'user_id' => 0,
-                    'respone_game' => u::getResponseGameIsOnly(0)
-                ]
-            );
-        }else{
-            $arr_data = array();
-            foreach($list_user AS $user){
+        $arr_data = array();
+        foreach($list_user AS $user){
+            if($request->is_only){
                 $arr_data[] = [
                     'user_id'=>$user->user_id,
-                    'respone_game' => u::getResponseGame()
+                    'response_game' => u::getResponseGameIsOnly(1)
+                ];
+            }else{
+                $arr_data[] = [
+                    'user_id'=>$user->user_id,
+                    'response_game' => u::getResponseGame()
                 ];
             }
         }
-        dd($arr_data);
+    
+        if($request->is_only){
+            array_push($arr_data,[
+                'user_id' => 999999,
+                'response_game' => u::getResponseGameIsOnly(0)
+            ]);
+        }
         $arr_data_res = u::processResult($arr_data, $request->num_img);
         foreach($arr_data_res AS  $row){
-            if($row['user_id'] > 0){
-                if($row['respone_game']==1 && $row['img_add']>0){
+            if($row['user_id'] != 999999){
+                if($row['response_game']==1 && $row['img_add']>0){
                     u::addImgRand($row['img_add'],$row['user_id']);
-                }elseif($row['respone_game']==0 && $row['img_minus']>0){
+                }elseif($row['response_game']==0 && $row['img_minus']>0){
                     u::minusImg($row['img_minus'], $row['user_id']);
                 }
             }
-            SocketController::pushData($row['user_id'],'end_game',$arr_data_res);
         }
+        $data_push = array(
+            'room_id' => $request->room_id,
+            'action' => 'endGame',
+            'list_user' => $arr_data_res
+        );
+        SocketController::pushData(auth()->user()->id,'dataRoom',$data_push);
         u::updateSimpleRow(['status'=>1],['id'=>$room_info->curr_round],'data_rounds');
         return response()->json( ['status'=>1]);
     }
@@ -204,14 +207,14 @@ class RoomsController extends Controller
         $arr_data_res = u::processResultGame2($arr_data, $request->num_img);
         foreach($arr_data_res AS  $row){
             if($row['user_id'] > 0){
-                if($row['respone_game']==1 && $row['img_add']>0){
+                if($row['response_game']==1 && $row['img_add']>0){
                     u::addImgRand($row['img_add'],$row['user_id']);
-                }elseif($row['respone_game']==0 && $row['img_minus']>0){
+                }elseif($row['response_game']==0 && $row['img_minus']>0){
                     u::minusImg($row['img_minus'], $row['user_id']);
                 }
             }
-            SocketController::pushData($row['user_id'],'end_game',$arr_data_res);
         }
+        SocketController::pushData($row['user_id'],'endGame',$arr_data_res);
         u::updateSimpleRow(['status'=>1],['id'=>$room_info->curr_round],'data_rounds');
         return response()->json( ['status'=>1]);
     }

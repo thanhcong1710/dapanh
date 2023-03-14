@@ -9,14 +9,14 @@
       <CHeaderNavLink>
         <div class="c-avatar">
           <img
-            src="img/avatars/6.jpg"
+            :src="user.avatar"
             class="c-avatar-img "
           />
         </div>
       </CHeaderNavLink>
     </template>
     <CDropdownHeader tag="div" class="text-center" color="drak">
-      <strong>Account</strong>
+      <strong>{{user.user_name}}</strong>
     </CDropdownHeader>
     <CDropdownItem>
       <CIcon name="cil-bell"/> Updates
@@ -67,11 +67,18 @@
 
 <script>
 import axios from 'axios'
+import u from "../utilities/utility";
 export default {
   name: 'TheHeaderDropdownAccnt',
   data () {
     return { 
       itemsCount: 42,
+      user:{
+        user_id: u.session().user_info.user_id,
+        avatar: u.session().user_info.avatar,
+        user_name: u.session().user_info.name,
+        img_show: u.session().user_info.img_show,
+      }
     }
   },
   methods:{

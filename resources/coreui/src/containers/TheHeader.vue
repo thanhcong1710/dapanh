@@ -1,12 +1,11 @@
 <template>
   <CHeader fixed with-subheader>
-    <a class="header-brand" href="#" style="width: calc(100% - 60px)">
+    <router-link :to="`/games`" style="width: calc(100% - 60px)">
       <img
-        src="img/brand/coreui-vue-logo.svg"
+        src="img/brand/logo.png"
         alt="logo"
         style="width: 150px; margin-top: 5px"
-      />
-    </a>
+      /></router-link>
     <CHeaderNav>
       <TheHeaderDropdownAccnt />
     </CHeaderNav>
@@ -15,14 +14,16 @@
 
 <script>
 import TheHeaderDropdownAccnt from "./TheHeaderDropdownAccnt";
-
+import u from "../utilities/utility";
 export default {
   name: "TheHeader",
   components: {
     TheHeaderDropdownAccnt,
   },
-  data() {
-    return {};
+  data: () => {
+    return {
+      user_id: u.session().user_info.user_id,
+    };
   },
   sockets: {
     connect: function () {
@@ -31,7 +32,7 @@ export default {
   },
   created() {
     this.$socket.emit("userConnected", {
-      user_id: "123",
+      user_id: this.user_id,
     });
   },
   methods: {},

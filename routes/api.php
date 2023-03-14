@@ -31,6 +31,8 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::post('/rounds-2/select-option', 'RoomsController@selectOption2')->name('rooms.rounds_2.selectOption');
         Route::post('/rounds-2/end', 'RoomsController@endRound2')->name('rooms.rounds_2.approve');
         Route::get('/games/list', 'GamesController@listGame')->name('rooms.games.list');
+        Route::get('/user/get_img_active/{user_id}', 'GamesController@getImgByUser');
+        Route::post('/user/change_img_show', 'GamesController@changeImageShow');
     });
 });
 
