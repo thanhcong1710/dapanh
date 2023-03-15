@@ -11,11 +11,6 @@ import VueInternationalization from 'vue-i18n';
 import Locale from '../../js/vue-i18n-locales.generated.js';
 import VueSocketIO from 'vue-3-socket.io'
 import SocketIO from 'socket.io-client'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-Vue.component('font-awesome-icon', FontAwesomeIcon)
-library.add(faUserSecret)
 
 Vue.use(VueInternationalization);
 const i18n = new VueInternationalization({
