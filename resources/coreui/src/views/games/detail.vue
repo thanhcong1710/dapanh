@@ -98,7 +98,7 @@
                       </div>
                     </div>
                     <div class="d-flex justify-content-end mb-10" v-else>
-                      <div class="d-flex flex-column align-items-end">
+                      <div class="d-flex flex-column align-items-endt">
                         <div class="d-flex align-items-center mb-2">
                           <div class="me-3">
                             <span class="text-muted fs-7 mb-1">{{item.created_at}}</span>
@@ -118,7 +118,7 @@
               </div>
               <div class="card-footer" >
                 <div class="input-group">
-                  <input class="form-control" v-model="chatbox.message" />
+                  <input class="form-control" v-model="chatbox.message" v-on:keyup.enter="sendMessage()"  />
                   <span class="input-group-text btn btn-primary" @click=sendMessage()>Gửi</span>
                 </div>
               </div>
@@ -401,8 +401,8 @@ export default {
     sendMessage(){
       if(this.chatbox.message && u.session()){
         const data_mess = {
-          user_name : this.user.name,
-          user_id : this.user.id,
+          user_name : this.user.user_name,
+          user_id : this.user.user_id,
           room_id: this.room_info.room_id,
           avatar : this.user.avatar,
           content : this.chatbox.message,
@@ -453,6 +453,10 @@ export default {
           .catch((e) => {
             u.processAuthen(e);
           });
+    },
+    scrollToBottomChat(){
+      var container = this.$el.querySelector("#kt_chat_messenger_body");
+      container.scrollTop = container.scrollHeight-100;
     }
   },
   sockets: {
@@ -493,6 +497,7 @@ export default {
     },
     messageChat: function (data) {
       this.chatbox.list_message.push(data)
+      setTimeout(() => this.scrollToBottomChat(), 200);
     },
   },
 };

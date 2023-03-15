@@ -250,7 +250,7 @@ body{
 }
 .game-box-chat .card .card-body{
   padding: 10px;
-  min-height: 130px;
+  min-height: 180px;
 }
 .list-user .box-action{
   border-bottom: 1px solid #ccc;
@@ -370,6 +370,9 @@ transform: rotateY(180deg);
 .zoom-in-zoom-out {
   animation: zoom-in-zoom-out 2s ease-out infinite;
 }
+.modal-info .modal-content{
+  border: none;
+}
 .box {
   text-align: center;
   font-size: 30px;
@@ -423,9 +426,6 @@ transform: rotateY(180deg);
   }
   .games-detail .games-detail-show{
     min-height: 300px;
-  }
-  .modal_change_img .modal-info .modal-content{
-    border: none;
   }
   .modal_change_img .modal-body{
     max-height: 48vh;
