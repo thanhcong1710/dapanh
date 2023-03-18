@@ -10,7 +10,7 @@ use App\Providers\UtilityServiceProvider as u;
 class SocketController extends Controller
 {
     public static function pushData($user_id,$event,$data){
-        $baseUri = "127.0.0.1";
+        $baseUri = "34.87.6.242";
         $port = 3000;
         $socketio = new SocketIO();
         if ($socketio->send($baseUri, $port , $event, json_encode($data))){
