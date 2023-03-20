@@ -2,7 +2,6 @@ import u from '../../utilities/utility'
 const GamesList = () => import('../../views/games/index')
 const GamesDetail = () => import('../../views/games/detail')
 const GamesDetail_2 = () => import('../../views/games/detail_2')
-const GamesDetail_3 = () => import('../../views/games/detail_3')
 
 export default {
   router: {
@@ -28,12 +27,7 @@ export default {
         path: '/rooms/:id/detail_2',
         name: 'Chi Tiết Game',
         component: GamesDetail_2
-      },
-      {
-        path: '/rooms/:id/detail_3',
-        name: 'Chi Tiết Game',
-        component: GamesDetail_3
-      },
+      }
     ]
   }
 }

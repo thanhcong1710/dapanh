@@ -62,7 +62,11 @@ export default {
         .then((response) => {
           this.loading.processing = false;
           if (response.data.status == 1) {
-            this.$router.push({ path: `/rooms/${response.data.room_code}/detail` });
+            if(response.data.type_game == 1){
+              this.$router.push({ path: `/rooms/${response.data.room_code}/detail` });
+            }else if((response.data.type_game == 2)){
+              this.$router.push({ path: `/rooms/${response.data.room_code}/detail_2` });
+            }
           }
         })
         .catch((e) => {

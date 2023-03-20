@@ -18,7 +18,7 @@ class RoomsController extends Controller
             'created_by' => auth()->user()->id,
             'status' => 1
         ],'data_rooms');
-        return response()->json( ['room_id'=>$room_id,'room_code'=>$code, 'status'=>1]);
+        return response()->json( ['room_id'=>$room_id,'room_code'=>$code, 'status'=>1, 'type_game'=>$request->game_id]);
     }
     public function detail(Request $request, $room_code){
         $room_info = u::first("SELECT *, id AS room_id,  
