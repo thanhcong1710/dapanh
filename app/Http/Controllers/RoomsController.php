@@ -144,8 +144,7 @@ class RoomsController extends Controller
                 'num_img' => $request->num_img,
                 'created_at' => date('Y-m-d H:i:s'),
                 'is_only' => $request->is_only,
-                'status' => 0,
-                'select_option'=>1 //mặc định là chọn búa
+                'status' => 0
             ],'data_rounds');
             u::updateSimpleRow(['curr_round' => $round_id],['id'=>$request->room_id], 'data_rooms');
         }else{
@@ -164,11 +163,21 @@ class RoomsController extends Controller
             u::insertSimpleRow([
                 'user_id' => $user_id,
                 'room_id' => $request->room_id,
+                'round_id' => $round_id,
                 'num_img' => $request->num_img,
                 'updated_at' => date('Y-m-d H:i:s'),
                 'status' => 1
             ],'data_user_round');
         }
+
+        $data_push = array(
+            'room_id' => $request->room_id,
+            'action' => 'approveRound',
+            'user_id' => $user_id,
+            'num_img' => $request->num_img,
+            'user_ready'  => $request->user_ready,
+        );
+        SocketController::pushData($user_id,'dataRoom', $data_push);
         return response()->json( ['status'=>1]);
     }
 
@@ -176,7 +185,7 @@ class RoomsController extends Controller
         $room_info = u::first("SELECT id, curr_round FROM data_rooms WHERE id = $request->room_id ");
         $round_info = u::first("SELECT id, is_only, num_img FROM data_rounds WHERE id = $room_info->curr_round AND status=0");
         if($round_info){
-            u::updateSimpleRow(['select_option' => $request->select_option],['id'=>$request->room_id], 'data_rooms');
+            u::updateSimpleRow(['select_option' => $request->select_option],['round_id'=>$round_info->id,'user_id'=>$request->user_id], 'data_user_round');
         }
         return response()->json( ['status'=>1]);
     }
@@ -184,25 +193,19 @@ class RoomsController extends Controller
     public function endRound2(Request $request){
         $room_info = u::first("SELECT id, curr_round FROM data_rooms WHERE id = $request->room_id ");
         $list_user = u::query("SELECT user_id,select_option FROM data_user_round WHERE round_id = $room_info->curr_round AND status=1");
+        
+        $arr_data = array();
+        foreach($list_user AS $user){
+            $arr_data[] = [
+                'user_id'=>$user->user_id,
+                'select_option'=> $user->select_option ? $user->select_option : 1, //mặc định ko chọn là búa
+            ];
+        }
         if($request->is_only){
-            $arr_data = array(
-                '0' => [
-                    'user_id' => $list_user[0]->user_id,
-                    'select_option'=> $list_user[0]->select_option,
-                ],
-                '1' => [
-                    'user_id' => 0,
-                    'select_option'=> u::genSelectOptionGame2($list_user[0]->select_option),
-                ]
-            );
-        }else{
-            $arr_data = array();
-            foreach($list_user AS $user){
-                $arr_data[] = [
-                    'user_id'=>$user->user_id,
-                    'select_option'=> $list_user[0]->select_option,
-                ];
-            }
+            array_push($arr_data,[
+                'user_id' => 999999,
+                'select_option' => u::genSelectOptionGame2($list_user[0]->select_option)
+            ]);
         }
         $arr_data_res = u::processResultGame2($arr_data, $request->num_img);
         foreach($arr_data_res AS  $row){
@@ -214,7 +217,12 @@ class RoomsController extends Controller
                 }
             }
         }
-        SocketController::pushData($row['user_id'],'endGame',$arr_data_res);
+        $data_push = array(
+            'room_id' => $request->room_id,
+            'action' => 'endGame',
+            'list_user' => $arr_data_res
+        );
+        SocketController::pushData(auth()->user()->id,'dataRoom',$data_push);
         u::updateSimpleRow(['status'=>1],['id'=>$room_info->curr_round],'data_rounds');
         return response()->json( ['status'=>1]);
     }

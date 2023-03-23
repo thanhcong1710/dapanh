@@ -270,6 +270,12 @@ class UtilityServiceProvider extends ServiceProvider
 			'6'=>3,//kéo
 			'7'=>3,
 			'8'=>3,
+			'9'=>1,
+			'10'=>2,
+			'11'=>3,
+			'12'=>1,
+			'13'=>2,
+			'14'=>3
 		];
 		if($user_option == 1){
 			unset($arr_status[6]);
@@ -298,22 +304,22 @@ class UtilityServiceProvider extends ServiceProvider
 				$arr_data[0]['response_game']=2;
 				$arr_data[1]['response_game']=2; 
 			}elseif($arr_data[1]['select_option']==1){
-				$arr_data[0]['response_game']=0;
-				$arr_data[1]['response_game']=1; 
-			}else{
 				$arr_data[0]['response_game']=1;
 				$arr_data[1]['response_game']=0; 
+			}else{
+				$arr_data[0]['response_game']=0;
+				$arr_data[1]['response_game']=1; 
 			}
 		}else{
 			if($arr_data[1]['select_option']==3){
 				$arr_data[0]['response_game']=2;
 				$arr_data[1]['response_game']=2; 
 			}elseif($arr_data[1]['select_option']==1){
-				$arr_data[0]['response_game']=0;
-				$arr_data[1]['response_game']=1; //Thắng
-			}else{
 				$arr_data[0]['response_game']=1;
-				$arr_data[1]['response_game']=0; 
+				$arr_data[1]['response_game']=0; //Thắng
+			}else{
+				$arr_data[0]['response_game']=0;
+				$arr_data[1]['response_game']=1; 
 			}
 		}
 		$i=0;

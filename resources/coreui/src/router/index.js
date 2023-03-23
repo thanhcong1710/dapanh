@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Games from './pages/games'
+import User from './pages/user'
 
 // Views - New Layout
 const TheContainerNew = () => import('@/containers/TheContainer')
@@ -27,11 +28,12 @@ function configRoutes () {
   return [
     {
       path: '/',
-      redirect: '/dashboard',
+      redirect: '/games',
       name: 'Home',
       component: TheContainerNew,
       children: [
         Games.router,
+        User.router,
       ]
     },
     {
